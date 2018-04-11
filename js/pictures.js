@@ -28,14 +28,14 @@ var getRandomValue = function (min, max) {
 
 // функция генерации рандомных значений массива
 var makeRandomArray = function (min, max, toRandomArray) {
-var getArray = toRandomArray.slice();
-var toRandomArrayCount = getRandomValue(min, max);
-var randomArray = [];
-  for (var i = 0; i < toRandomArrayCount; i++) {
-    var arrayRand = getRandomValue (min - 1, getArray.length - 1);
-    randomArray.push(getArray[arrayRand]);
-    getArray.splice(arrayRand, 1);
-  }
+  var getArray = toRandomArray.slice();
+  var toRandomArrayCount = getRandomValue(min, max);
+  var randomArray = [];
+    for (var i = 0; i < toRandomArrayCount; i++) {
+      var arrayRand = getRandomValue (min - 1, getArray.length - 1);
+      randomArray.push(getArray[arrayRand]);
+      getArray.splice(arrayRand, 1);
+    }
   return randomArray;
 }
 
@@ -51,7 +51,7 @@ var getInfo = function (totalImages) {
       comment: makeRandomArray(1, 2, comments),
       description: [descriptions[getDescription]]
     }
-  images[i] = imageInfo;
+images[i] = imageInfo;
   }
 }
 getInfo(totalImages);
