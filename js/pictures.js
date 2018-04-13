@@ -3,6 +3,7 @@
 var totalImages = 25;
 var minLike = 15;
 var maxLike = 200;
+var ESC_KEYCODE = 27;
 
 var comments = [
   'Всё отлично!',
@@ -18,29 +19,36 @@ var descriptions = [
   'Как же круто тут кормят',
   'Отдыхаем...',
   'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
-  'Вот это тачка!']
+  'Вот это тачка!'];
 
 var images = [];
 
 var getRandomValue = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};
 
 // функция генерации рандомных значений массива
 var makeRandomArray = function (min, max, toRandomArray) {
   var getArray = toRandomArray.slice();
   var toRandomArrayCount = getRandomValue(min, max);
   var randomArray = [];
-    for (var i = 0; i < toRandomArrayCount; i++) {
-      var arrayRand = getRandomValue (min - 1, getArray.length - 1);
-      randomArray.push(getArray[arrayRand]);
-      getArray.splice(arrayRand, 1);
-    }
+  for (var i = 0; i < toRandomArrayCount; i++) {
+    var arrayRand = getRandomValue(min - 1, getArray.length - 1);
+    randomArray.push(getArray[arrayRand]);
+    getArray.splice(arrayRand, 1);
+  }
   return randomArray;
-}
+};
+
+// функция удаления элемента
+var firstChildRemove = function (toFirstChildRemove) {
+  while (toFirstChildRemove.firstChild) {
+    toFirstChildRemove.removeChild(toFirstChildRemove.firstChild);
+  }
+};
 
 // генерация массива
-var getInfo = function (totalImages) {
+var getInfo = function () {
   for (var i = 0; i < totalImages; i++) {
     var getUrl = 'photos/' + (i + 1) + '.jpg';
     var getLike = getRandomValue(minLike, maxLike);
@@ -50,15 +58,15 @@ var getInfo = function (totalImages) {
       like: getLike,
       comment: makeRandomArray(1, 2, comments),
       description: [descriptions[getDescription]]
-    }
-images[i] = imageInfo;
+    };
+    images[i] = imageInfo;
   }
-}
+};
 getInfo(totalImages);
 
 
 // рендер картинок
-var renderImages = function (totalImages) {
+var renderImages = function () {
   var pictures = document.querySelector('.pictures');
   var template = document.querySelector('template').content.querySelector('.picture__link');
   var templateImgUrl = document.querySelector('template').content.querySelector('.picture__img');
@@ -75,43 +83,108 @@ var renderImages = function (totalImages) {
     fragment.appendChild(element);
     pictures.appendChild(fragment);
   }
-}
+};
 renderImages(totalImages);
 
-var firstChildRemove = function(toFirstChildRemove) {
-  while (toFirstChildRemove.firstChild) {
-      toFirstChildRemove.removeChild(toFirstChildRemove.firstChild);
-  }
-}
-
-// подготовка большой картинки
+// большая картинки
 var bigPicture = document.querySelector('.big-picture');
 var bigPictureImg = document.querySelector('.big-picture__img img');
 var bigPictureLikesCount = document.querySelector('.likes-count');
-var bigPictureCommentsCount = document.querySelector('.comments-count');
 var bigPictureComments = document.querySelector('.social__comments');
+var pictureLink = document.querySelectorAll('.picture__link');
+var pictureLinkClose = document.querySelector('.big-picture__cancel');
 document.querySelector('.social__comment-count').classList.add('visually-hidden');
 document.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
-bigPicture.classList.remove('hidden');
-firstChildRemove(bigPictureComments);
 
-// рендер большой картинки
-var renderBigPicture = function () {
-  bigPictureImg.setAttribute('src', images[0].url);
-  bigPictureLikesCount.innerHTML = images[0].like;
-  bigPictureCommentsCount.innerHTML = images[0].comment.length;
-}
-renderBigPicture(); // данные пока не передаю, как я понял в следующих заданиях сообщат какие конкретно данные передавать
+pictureLink.forEach(function (e, i) {
+  e.onclick = function () {
+    bigPictureImg.setAttribute('src', images[i].url);
+    bigPictureLikesCount.innerHTML = images[i].like;
+    firstChildRemove(bigPictureComments);
+    for (var ic = 0; ic < images[i].comment.length; ic++) {
+      var fragment = document.createDocumentFragment();
+      var newCommentElement = document.createElement('li');
+      var getAvatar = '<img class="social__picture" src="img/avatar-' + getRandomValue(1, 6) + '.svg" alt="Аватар комментатора фотографии" width="35" height="35">';
+      newCommentElement.className = 'social__comment social__comment--text';
+      newCommentElement.innerHTML = getAvatar + images[i].comment[ic];
+      fragment.appendChild(newCommentElement);
+      bigPictureComments.appendChild(fragment);
+    }
+    bigPicture.classList.remove('hidden');
+  };
+});
 
-var generateComments = function (commentsCount) {
-  for (var i = 0; i < commentsCount; i++) {
-    var fragment = document.createDocumentFragment();
-    var newCommentElement = document.createElement('li');
-    var getAvatar = '<img class="social__picture" src="img/avatar-' + getRandomValue(1, 6) + '.svg" alt="Аватар комментатора фотографии" width="35" height="35">'
-    newCommentElement.className = 'social__comment social__comment--text';
-    newCommentElement.innerHTML = getAvatar + images[0].comment[i];
-    fragment.appendChild(newCommentElement);
-    bigPictureComments.appendChild(fragment);
-  }
-}
-generateComments(images[0].comment.length);
+var onBigPictureClose = function () {
+  bigPicture.classList.add('hidden');
+};
+
+pictureLinkClose.addEventListener('click', onBigPictureClose);
+
+// загружаем картинку и закрываем окно
+var uploadButton = document.getElementById('upload-file');
+var imageUploadOverlay = document.querySelector('.img-upload__overlay');
+var imageUploadOverlayClose = document.getElementById('upload-cancel');
+
+var onImageUpload = function () {
+  imageUploadOverlay.classList.remove('hidden');
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      imageUploadOverlay.classList.add('hidden');
+      uploadButton.value = '';
+    }
+  });
+};
+
+var onImageUploadClose = function () {
+  imageUploadOverlay.classList.add('hidden');
+};
+
+uploadButton.addEventListener('change', onImageUpload);
+imageUploadOverlayClose.addEventListener('click', onImageUploadClose);
+
+// эффекты
+var imagePreview = document.querySelector('.img-upload__preview');
+var effectPreviewOriginal = document.querySelector('.effects__preview--none');
+var effectPreviewChrome = document.querySelector('.effects__preview--chrome');
+var effectPreviewSepia = document.querySelector('.effects__preview--sepia');
+var effectPreviewMarvin = document.querySelector('.effects__preview--marvin');
+var effectPreviewPhobos = document.querySelector('.effects__preview--phobos');
+var effectPreviewHeat = document.querySelector('.effects__preview--heat');
+var scaleValue = document.querySelector('.scale__value');
+
+var onEffectPreviewChromeClick = function () {
+  var grayscaleValue = 1 / 100 * scaleValue.value;
+  imagePreview.classList.add('effects__preview--chrome');
+  imagePreview.setAttribute('style', 'filter: grayscale(' + grayscaleValue + ')');
+};
+
+var onEffectPreviewSepiaClick = function () {
+  var sepiaValue = 1 / 100 * scaleValue.value;
+  imagePreview.classList.add('effects__preview--sepia');
+  imagePreview.setAttribute('style', 'filter: sepia(' + sepiaValue + ')');
+};
+
+var onEffectPreviewMarvinClick = function () {
+  var marvinValue = scaleValue.value;
+  imagePreview.classList.add('effects__preview--marvin');
+  imagePreview.setAttribute('style', 'filter: invert(' + marvinValue + '%)');
+};
+
+var onEffectPreviewPhobosClick = function () {
+  var phobosValue = 3 / 100 * scaleValue.value;
+  imagePreview.classList.add('effects__preview--phobos');
+  imagePreview.setAttribute('style', 'filter: blur(' + phobosValue + 'px)');
+};
+
+var onEffectPreviewHeatClick = function () {
+  var heatValue = (2 / 100 * scaleValue.value) + 1;
+  imagePreview.classList.add('effects__preview--heat');
+  imagePreview.setAttribute('style', 'filter: brightness(' + heatValue + ')');
+};
+
+effectPreviewOriginal.addEventListener('click', onImageUploadClose);
+effectPreviewChrome.addEventListener('click', onEffectPreviewChromeClick);
+effectPreviewSepia.addEventListener('click', onEffectPreviewSepiaClick);
+effectPreviewMarvin.addEventListener('click', onEffectPreviewMarvinClick);
+effectPreviewPhobos.addEventListener('click', onEffectPreviewPhobosClick);
+effectPreviewHeat.addEventListener('click', onEffectPreviewHeatClick);
