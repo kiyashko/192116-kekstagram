@@ -48,8 +48,8 @@ var firstChildRemove = function (toFirstChildRemove) {
 };
 
 // генерация массива
-var getInfo = function () {
-  for (var i = 0; i < totalImages; i++) {
+var getInfo = function (picturesCount) {
+  for (var i = 0; i < picturesCount; i++) {
     var getUrl = 'photos/' + (i + 1) + '.jpg';
     var getLike = getRandomValue(minLike, maxLike);
     var getDescription = getRandomValue(0, descriptions.length - 1);
@@ -66,7 +66,7 @@ getInfo(totalImages);
 
 
 // рендер картинок
-var renderImages = function () {
+var renderImages = function (picturesCount) {
   var pictures = document.querySelector('.pictures');
   var template = document.querySelector('template').content.querySelector('.picture__link');
   var templateImgUrl = document.querySelector('template').content.querySelector('.picture__img');
@@ -74,7 +74,7 @@ var renderImages = function () {
   var templateLike = document.querySelector('template').content.querySelector('.picture__stat--likes');
   var fragment = document.createDocumentFragment();
 
-  for (var i = 0; i < totalImages; i++) {
+  for (var i = 0; i < picturesCount; i++) {
     templateImgUrl.setAttribute('src', images[i].url);
     templateComment.innerHTML = images[i].comment.length;
     templateLike.innerHTML = images[i].like;
@@ -96,22 +96,24 @@ var pictureLinkClose = document.querySelector('.big-picture__cancel');
 document.querySelector('.social__comment-count').classList.add('visually-hidden');
 document.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
 
-pictureLink.forEach(function (e, i) {
-  e.onclick = function () {
+
+pictureLink.forEach(function (elem, i) {
+  elem.addEventListener('click', function (e) {
+    e.preventDefault();
     bigPictureImg.setAttribute('src', images[i].url);
     bigPictureLikesCount.innerHTML = images[i].like;
     firstChildRemove(bigPictureComments);
-    for (var ic = 0; ic < images[i].comment.length; ic++) {
+    for (var j = 0; j < images[i].comment.length; j++) {
       var fragment = document.createDocumentFragment();
       var newCommentElement = document.createElement('li');
       var getAvatar = '<img class="social__picture" src="img/avatar-' + getRandomValue(1, 6) + '.svg" alt="Аватар комментатора фотографии" width="35" height="35">';
       newCommentElement.className = 'social__comment social__comment--text';
-      newCommentElement.innerHTML = getAvatar + images[i].comment[ic];
+      newCommentElement.innerHTML = getAvatar + images[i].comment[j];
       fragment.appendChild(newCommentElement);
       bigPictureComments.appendChild(fragment);
     }
     bigPicture.classList.remove('hidden');
-  };
+  });
 });
 
 var onBigPictureClose = function () {
@@ -144,47 +146,37 @@ imageUploadOverlayClose.addEventListener('click', onImageUploadClose);
 
 // эффекты
 var imagePreview = document.querySelector('.img-upload__preview');
-var effectPreviewOriginal = document.querySelector('.effects__preview--none');
-var effectPreviewChrome = document.querySelector('.effects__preview--chrome');
-var effectPreviewSepia = document.querySelector('.effects__preview--sepia');
-var effectPreviewMarvin = document.querySelector('.effects__preview--marvin');
-var effectPreviewPhobos = document.querySelector('.effects__preview--phobos');
-var effectPreviewHeat = document.querySelector('.effects__preview--heat');
+var uploadEffectControls = document.querySelector('.img-upload__effects');
 var scaleValue = document.querySelector('.scale__value');
 
-var onEffectPreviewChromeClick = function () {
-  var grayscaleValue = 1 / 100 * scaleValue.value;
-  imagePreview.classList.add('effects__preview--chrome');
-  imagePreview.setAttribute('style', 'filter: grayscale(' + grayscaleValue + ')');
+var grayscaleValue = 1 / 100 * scaleValue.value;
+var sepiaValue = 1 / 100 * scaleValue.value;
+var marvinValue = scaleValue.value + '%';
+var phobosValue = 3 / 100 * scaleValue.value + 'px';
+var heatValue = (2 / 100 * scaleValue.value) + 1;
+
+var effectFiltersValue = ['0', grayscaleValue, sepiaValue, marvinValue, phobosValue, heatValue];
+var effectClass = ['effects__preview--none', 'effects__preview--chrome', 'effects__preview-sepia', 'effects__preview-marvin', 'effects__preview-phobos', 'effects__preview-heat'];
+var effectId = ['effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat'];
+var effectFilter = ['none', 'grayscale', 'sepia', 'invert', 'blur', 'brightness'];
+
+var onImageFilter = function (e) {
+  imagePreview.classList.add('img-upload__preview');
+  var target = e.target.parentNode;
+  for (var i = 0; i < effectId.length; i++) {
+    if (target.tagName === 'div') {
+      return;
+    }
+    if (target.previousElementSibling.id === effectId[i]) {
+      if (target.previousElementSibling.id === 'effect-none') {
+        imagePreview.removeAttribute('style');
+      }
+      imagePreview.className = '';
+      imagePreview.classList.add(effectClass[i]);
+      imagePreview.id = effectClass[i];
+      imagePreview.style.filter = effectFilter[i] + '(' + effectFiltersValue[i] + ')';
+    }
+  }
 };
 
-var onEffectPreviewSepiaClick = function () {
-  var sepiaValue = 1 / 100 * scaleValue.value;
-  imagePreview.classList.add('effects__preview--sepia');
-  imagePreview.setAttribute('style', 'filter: sepia(' + sepiaValue + ')');
-};
-
-var onEffectPreviewMarvinClick = function () {
-  var marvinValue = scaleValue.value;
-  imagePreview.classList.add('effects__preview--marvin');
-  imagePreview.setAttribute('style', 'filter: invert(' + marvinValue + '%)');
-};
-
-var onEffectPreviewPhobosClick = function () {
-  var phobosValue = 3 / 100 * scaleValue.value;
-  imagePreview.classList.add('effects__preview--phobos');
-  imagePreview.setAttribute('style', 'filter: blur(' + phobosValue + 'px)');
-};
-
-var onEffectPreviewHeatClick = function () {
-  var heatValue = (2 / 100 * scaleValue.value) + 1;
-  imagePreview.classList.add('effects__preview--heat');
-  imagePreview.setAttribute('style', 'filter: brightness(' + heatValue + ')');
-};
-
-effectPreviewOriginal.addEventListener('click', onImageUploadClose);
-effectPreviewChrome.addEventListener('click', onEffectPreviewChromeClick);
-effectPreviewSepia.addEventListener('click', onEffectPreviewSepiaClick);
-effectPreviewMarvin.addEventListener('click', onEffectPreviewMarvinClick);
-effectPreviewPhobos.addEventListener('click', onEffectPreviewPhobosClick);
-effectPreviewHeat.addEventListener('click', onEffectPreviewHeatClick);
+uploadEffectControls.addEventListener('click', onImageFilter);
