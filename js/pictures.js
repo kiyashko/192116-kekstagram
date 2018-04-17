@@ -98,7 +98,9 @@ document.querySelector('.social__comment-loadmore').classList.add('visually-hidd
 
 
 pictureLink.forEach(function (elem, i) {
+
   elem.addEventListener('click', function (e) {
+
     e.preventDefault();
     bigPictureImg.setAttribute('src', images[i].url);
     bigPictureLikesCount.innerHTML = images[i].like;
@@ -113,6 +115,11 @@ pictureLink.forEach(function (elem, i) {
       bigPictureComments.appendChild(fragment);
     }
     bigPicture.classList.remove('hidden');
+    elem.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === 27) {
+        bigPicture.classList.add('hidden');
+      }
+    });
   });
 });
 
@@ -167,14 +174,16 @@ var onImageFilter = function (e) {
     if (target.tagName === 'div') {
       return;
     }
-    if (target.previousElementSibling.id === effectId[i]) {
-      if (target.previousElementSibling.id === 'effect-none') {
-        imagePreview.removeAttribute('style');
+    if (target.previousElementSibling) {
+      if (target.previousElementSibling.id === effectId[i]) {
+        if (target.previousElementSibling.id === 'effect-none') {
+          imagePreview.removeAttribute('style');
+        }
+        imagePreview.className = '';
+        imagePreview.classList.add(effectClass[i]);
+        imagePreview.id = effectClass[i];
+        imagePreview.style.filter = effectFilter[i] + '(' + effectFiltersValue[i] + ')';
       }
-      imagePreview.className = '';
-      imagePreview.classList.add(effectClass[i]);
-      imagePreview.id = effectClass[i];
-      imagePreview.style.filter = effectFilter[i] + '(' + effectFiltersValue[i] + ')';
     }
   }
 };
