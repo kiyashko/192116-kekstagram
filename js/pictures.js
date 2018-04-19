@@ -23,6 +23,7 @@ var descriptions = [
 
 var images = [];
 
+// функция получения случайного значения
 var getRandomValue = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
@@ -38,6 +39,18 @@ var makeRandomArray = function (min, max, toRandomArray) {
     getArray.splice(arrayRand, 1);
   }
   return randomArray;
+};
+
+// функция проверки на повтор в массиве
+var checkDup = function (s) {
+  var map = {};
+  for (var i = 0; i < s.length; i++) {
+    if (map[s[i]]) {
+      return true;
+    }
+    map[s[i]] = 1;
+  }
+  return false;
 };
 
 // функция удаления элемента
@@ -133,19 +146,29 @@ pictureLinkClose.addEventListener('click', onBigPictureClose);
 var uploadButton = document.getElementById('upload-file');
 var imageUploadOverlay = document.querySelector('.img-upload__overlay');
 var imageUploadOverlayClose = document.getElementById('upload-cancel');
+var commentTextArea = document.querySelector('.text__description');
+var commentHashtagArea = document.querySelector('.text__hashtags');
 
-var onImageUpload = function () {
-  imageUploadOverlay.classList.remove('hidden');
-  document.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      imageUploadOverlay.classList.add('hidden');
-      uploadButton.value = '';
-    }
-  });
+var escUploadedImage = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    imageUploadOverlay.classList.add('hidden');
+    uploadButton.value = '';
+  }
 };
 
 var onImageUploadClose = function () {
   imageUploadOverlay.classList.add('hidden');
+};
+
+var onImageUpload = function () {
+  imageUploadOverlay.classList.remove('hidden');
+  document.addEventListener('keydown', escUploadedImage);
+  commentTextArea.addEventListener('focus', function () {
+    document.removeEventListener('keydown', escUploadedImage);
+  });
+  commentHashtagArea.addEventListener('focus', function () {
+    document.removeEventListener('keydown', escUploadedImage);
+  });
 };
 
 uploadButton.addEventListener('change', onImageUpload);
@@ -189,3 +212,44 @@ var onImageFilter = function (e) {
 };
 
 uploadEffectControls.addEventListener('click', onImageFilter);
+
+// ошибки при заполнении формы
+commentHashtagArea.addEventListener('input', function (evt) {
+  var target = evt.target;
+  var hashtag = target.value.toString().toLowerCase().split(' ');
+  var hashtagLen = hashtag.length;
+
+  for (var j = 0; j < hashtagLen; j++)
+  hashtag[j] && hashtag.push(hashtag[j]);
+  hashtag.splice(0, hashtagLen);
+
+  var hashtagCheck = function (arr) {
+    var toSplit = arr.split('');
+    if (toSplit[0] === '#') {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  if (checkDup(hashtag) === true) {
+    target.setCustomValidity('Не повторяйте хештеги!');
+  } else {
+    target.setCustomValidity('');
+  }
+
+  if (hashtag.length > 5) {
+    target.setCustomValidity('Вы можете добавить не более пяти хештегов!');
+  }
+
+  hashtag.forEach(function (item, i) {
+    if (hashtag[i].length > 20) {
+      target.setCustomValidity('Максимальная длина хештега 20 символов!');
+    } else if (hashtag[i] === '#') {
+      target.setCustomValidity('Вы забыли добавить символы к хештегу!');
+    } else if (hashtagCheck(hashtag[i]) === !true) {
+      target.setCustomValidity('Вы забыли добавить решетку к хештегу!');
+    }
+  });
+
+});
