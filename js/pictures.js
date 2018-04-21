@@ -20,7 +20,6 @@ var descriptions = [
   'Отдыхаем...',
   'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
   'Вот это тачка!'];
-
 var images = [];
 
 // функция получения случайного значения
@@ -51,6 +50,16 @@ var checkDup = function (s) {
     map[s[i]] = 1;
   }
   return false;
+};
+
+// функция проверки налачия хештега
+var hashtagCheck = function (arr) {
+  var toSplit = arr.split('');
+  if (toSplit[0] === '#') {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 // функция удаления элемента
@@ -91,7 +100,7 @@ var renderImages = function (picturesCount) {
     templateImgUrl.setAttribute('src', images[i].url);
     templateComment.innerHTML = images[i].comment.length;
     templateLike.innerHTML = images[i].like;
-
+    templateImgUrl.setAttribute('name', i);
     var element = template.cloneNode(true);
     fragment.appendChild(element);
     pictures.appendChild(fragment);
@@ -104,37 +113,39 @@ var bigPicture = document.querySelector('.big-picture');
 var bigPictureImg = document.querySelector('.big-picture__img img');
 var bigPictureLikesCount = document.querySelector('.likes-count');
 var bigPictureComments = document.querySelector('.social__comments');
-var pictureLink = document.querySelectorAll('.picture__link');
 var pictureLinkClose = document.querySelector('.big-picture__cancel');
 document.querySelector('.social__comment-count').classList.add('visually-hidden');
 document.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
 
-
-pictureLink.forEach(function (elem, i) {
-
-  elem.addEventListener('click', function (e) {
-
-    e.preventDefault();
-    bigPictureImg.setAttribute('src', images[i].url);
-    bigPictureLikesCount.innerHTML = images[i].like;
-    firstChildRemove(bigPictureComments);
-    for (var j = 0; j < images[i].comment.length; j++) {
-      var fragment = document.createDocumentFragment();
-      var newCommentElement = document.createElement('li');
-      var getAvatar = '<img class="social__picture" src="img/avatar-' + getRandomValue(1, 6) + '.svg" alt="Аватар комментатора фотографии" width="35" height="35">';
-      newCommentElement.className = 'social__comment social__comment--text';
-      newCommentElement.innerHTML = getAvatar + images[i].comment[j];
-      fragment.appendChild(newCommentElement);
-      bigPictureComments.appendChild(fragment);
+document.addEventListener('click', function (event) {
+  var target = event.target;
+  if (target.className !== 'picture__img') {
+    return;
+  }
+  var picidx = event.target.name;
+  showBigPicture(picidx);
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 27) {
+      bigPicture.classList.add('hidden');
     }
-    bigPicture.classList.remove('hidden');
-    elem.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === 27) {
-        bigPicture.classList.add('hidden');
-      }
-    });
   });
 });
+
+var showBigPicture = function (picidx) {
+  bigPictureImg.setAttribute('src', images[picidx].url);
+  bigPictureLikesCount.innerHTML = images[picidx].like;
+  firstChildRemove(bigPictureComments);
+  for (var j = 0; j < images[picidx].comment.length; j++) {
+    var fragment = document.createDocumentFragment();
+    var newCommentElement = document.createElement('li');
+    var getAvatar = '<img class="social__picture" src="img/avatar-' + getRandomValue(1, 6) + '.svg" alt="Аватар комментатора фотографии" width="35" height="35">';
+    newCommentElement.className = 'social__comment social__comment--text';
+    newCommentElement.innerHTML = getAvatar + images[picidx].comment[j];
+    fragment.appendChild(newCommentElement);
+    bigPictureComments.appendChild(fragment);
+  }
+  bigPicture.classList.remove('hidden');
+};
 
 var onBigPictureClose = function () {
   bigPicture.classList.add('hidden');
@@ -146,29 +157,24 @@ pictureLinkClose.addEventListener('click', onBigPictureClose);
 var uploadButton = document.getElementById('upload-file');
 var imageUploadOverlay = document.querySelector('.img-upload__overlay');
 var imageUploadOverlayClose = document.getElementById('upload-cancel');
-var commentTextArea = document.querySelector('.text__description');
 var commentHashtagArea = document.querySelector('.text__hashtags');
-
-var escUploadedImage = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    imageUploadOverlay.classList.add('hidden');
-    uploadButton.value = '';
-  }
-};
+var commentTextArea = document.querySelector('.text__description');
 
 var onImageUploadClose = function () {
   imageUploadOverlay.classList.add('hidden');
 };
 
+var onEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE && document.activeElement !== commentHashtagArea && document.activeElement !== commentTextArea) {
+    onImageUploadClose();
+    imageUploadOverlay.classList.add('hidden');
+    uploadButton.value = '';
+  }
+};
+
 var onImageUpload = function () {
   imageUploadOverlay.classList.remove('hidden');
-  document.addEventListener('keydown', escUploadedImage);
-  commentTextArea.addEventListener('focus', function () {
-    document.removeEventListener('keydown', escUploadedImage);
-  });
-  commentHashtagArea.addEventListener('focus', function () {
-    document.removeEventListener('keydown', escUploadedImage);
-  });
+  document.addEventListener('keydown', onEscPress);
 };
 
 uploadButton.addEventListener('change', onImageUpload);
@@ -210,38 +216,20 @@ var onImageFilter = function (e) {
     }
   }
 };
-
 uploadEffectControls.addEventListener('click', onImageFilter);
 
 // ошибки при заполнении формы
 commentHashtagArea.addEventListener('input', function (evt) {
   var target = evt.target;
-  var hashtag = target.value.toString().toLowerCase().split(' ');
-  var hashtagLen = hashtag.length;
-
-  for (var j = 0; j < hashtagLen; j++)
-  hashtag[j] && hashtag.push(hashtag[j]);
-  hashtag.splice(0, hashtagLen);
-
-  var hashtagCheck = function (arr) {
-    var toSplit = arr.split('');
-    if (toSplit[0] === '#') {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
+  var hashtag = target.value.toString().replace(/\s{2,}/g, ' ').toLowerCase().split(' ');
   if (checkDup(hashtag) === true) {
     target.setCustomValidity('Не повторяйте хештеги!');
   } else {
     target.setCustomValidity('');
   }
-
   if (hashtag.length > 5) {
     target.setCustomValidity('Вы можете добавить не более пяти хештегов!');
   }
-
   hashtag.forEach(function (item, i) {
     if (hashtag[i].length > 20) {
       target.setCustomValidity('Максимальная длина хештега 20 символов!');
