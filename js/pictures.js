@@ -187,12 +187,12 @@ var scaleValue = document.querySelector('.scale__value');
 
 
 var createEffectFiltersValue = function (filterValue) {
-  var effectFiltersValue = ['0',
-    1 / 100 * filterValue,
-    1 / 100 * filterValue,
-    filterValue + '%',
-    3 / 100 * filterValue + 'px',
-    (2 / 100 * filterValue) + 1];
+  var grayscaleValue = 1 / 100 * filterValue;
+  var sepiaValue = 1 / 100 * filterValue;
+  var marvinValue = filterValue + '%';
+  var phobosValue = 3 / 100 * filterValue + 'px';
+  var heatValue = (2 / 100 * filterValue) + 1;
+  var effectFiltersValue = ['0', grayscaleValue, sepiaValue, marvinValue, phobosValue, heatValue];
   return effectFiltersValue;
 };
 
