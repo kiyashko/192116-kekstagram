@@ -122,8 +122,8 @@ document.addEventListener('click', function (event) {
   if (target.className !== 'picture__img') {
     return;
   }
-  var picidx = event.target.name;
-  showBigPicture(picidx);
+  var pictureIndex = event.target.name;
+  showBigPicture(pictureIndex);
   document.addEventListener('keydown', function (evt) {
     if (evt.keyCode === 27) {
       bigPicture.classList.add('hidden');
@@ -131,16 +131,16 @@ document.addEventListener('click', function (event) {
   });
 });
 
-var showBigPicture = function (picidx) {
-  bigPictureImg.setAttribute('src', images[picidx].url);
-  bigPictureLikesCount.innerHTML = images[picidx].like;
+var showBigPicture = function (pictureIndex) {
+  bigPictureImg.setAttribute('src', images[pictureIndex].url);
+  bigPictureLikesCount.innerHTML = images[pictureIndex].like;
   firstChildRemove(bigPictureComments);
-  for (var j = 0; j < images[picidx].comment.length; j++) {
+  for (var j = 0; j < images[pictureIndex].comment.length; j++) {
     var fragment = document.createDocumentFragment();
     var newCommentElement = document.createElement('li');
     var getAvatar = '<img class="social__picture" src="img/avatar-' + getRandomValue(1, 6) + '.svg" alt="Аватар комментатора фотографии" width="35" height="35">';
     newCommentElement.className = 'social__comment social__comment--text';
-    newCommentElement.innerHTML = getAvatar + images[picidx].comment[j];
+    newCommentElement.innerHTML = getAvatar + images[pictureIndex].comment[j];
     fragment.appendChild(newCommentElement);
     bigPictureComments.appendChild(fragment);
   }
@@ -185,13 +185,18 @@ var imagePreview = document.querySelector('.img-upload__preview');
 var uploadEffectControls = document.querySelector('.img-upload__effects');
 var scaleValue = document.querySelector('.scale__value');
 
-var grayscaleValue = 1 / 100 * scaleValue.value;
-var sepiaValue = 1 / 100 * scaleValue.value;
-var marvinValue = scaleValue.value + '%';
-var phobosValue = 3 / 100 * scaleValue.value + 'px';
-var heatValue = (2 / 100 * scaleValue.value) + 1;
 
-var effectFiltersValue = ['0', grayscaleValue, sepiaValue, marvinValue, phobosValue, heatValue];
+var createEffectFiltersValue = function (filterValue) {
+  var effectFiltersValue = ['0',
+    1 / 100 * filterValue,
+    1 / 100 * filterValue,
+    filterValue + '%',
+    3 / 100 * filterValue + 'px',
+    (2 / 100 * filterValue) + 1];
+  return effectFiltersValue;
+};
+
+var effectFiltersValue = createEffectFiltersValue(scaleValue.value);
 var effectClass = ['effects__preview--none', 'effects__preview--chrome', 'effects__preview-sepia', 'effects__preview-marvin', 'effects__preview-phobos', 'effects__preview-heat'];
 var effectId = ['effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat'];
 var effectFilter = ['none', 'grayscale', 'sepia', 'invert', 'blur', 'brightness'];
