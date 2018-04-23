@@ -174,7 +174,11 @@ var onEscPress = function (evt) {
 
 var onImageUpload = function () {
   imageUploadOverlay.classList.remove('hidden');
+  imageUploadScale.classList.add('hidden');
+  imagePreview.id = 'effect-none';
   document.addEventListener('keydown', onEscPress);
+  scalePin.style.left = 100 + '%';
+  scaleLevel.style.width = 100 + '%';
 };
 
 var resetEffects = function () {
@@ -256,6 +260,7 @@ scalePin.addEventListener('mousedown', function (evt) {
 var imagePreview = document.querySelector('.img-upload__preview');
 var uploadEffectControls = document.querySelector('.img-upload__effects');
 var scaleValue = document.querySelector('.scale__value');
+var imageUploadScale = document.querySelector('.img-upload__scale');
 
 var effectClass = ['effects__preview--none', 'effects__preview--chrome', 'effects__preview-sepia', 'effects__preview-marvin', 'effects__preview-phobos', 'effects__preview-heat'];
 var effectId = ['effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat'];
@@ -272,6 +277,9 @@ var createEffectFiltersValue = function (filterValue) {
 };
 
 var onImageFilter = function (e) {
+  scaleValue.setAttribute('value', 100);
+  scalePin.style.left = 100 + '%';
+  scaleLevel.style.width = 100 + '%';
   var effectFiltersValue = createEffectFiltersValue(scaleValue.value);
   var target = e.target.parentNode;
   for (var i = 0; i < effectId.length; i++) {
@@ -280,14 +288,15 @@ var onImageFilter = function (e) {
     }
     if (target.previousElementSibling) {
       if (target.previousElementSibling.id === effectId[i]) {
-        if (target.previousElementSibling.id === 'effect-none') {
-          imagePreview.removeAttribute('style');
-        }
+        imageUploadScale.classList.remove('hidden');
         imagePreview.className = '';
         imagePreview.classList.add('img-upload__preview');
         imagePreview.classList.add(effectClass[i]);
         imagePreview.id = effectId[i];
         imagePreview.style.filter = effectFilter[i] + '(' + effectFiltersValue[i] + ')';
+      } if (target.previousElementSibling.id === 'effect-none') {
+        imagePreview.removeAttribute('style');
+        imageUploadScale.classList.add('hidden');
       }
     }
   }
@@ -304,4 +313,5 @@ var onMouseUpFilter = function (filterScaleValue) {
     }
   }
 };
+
 uploadEffectControls.addEventListener('click', onImageFilter);
