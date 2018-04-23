@@ -161,19 +161,28 @@ var commentTextArea = document.querySelector('.text__description');
 
 var onImageUploadClose = function () {
   imageUploadOverlay.classList.add('hidden');
+  resetEffects();
 };
 
 var onEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE && document.activeElement !== commentHashtagArea && document.activeElement !== commentTextArea) {
     onImageUploadClose();
     imageUploadOverlay.classList.add('hidden');
-    uploadButton.value = '';
+    resetEffects();
   }
 };
-imageUploadOverlay.classList.remove('hidden');
+
 var onImageUpload = function () {
   imageUploadOverlay.classList.remove('hidden');
   document.addEventListener('keydown', onEscPress);
+};
+
+var resetEffects = function () {
+  uploadButton.value = '';
+  imagePreview.className = '';
+  imagePreview.classList.add('img-upload__preview');
+  imagePreview.removeAttribute('id');
+  imagePreview.removeAttribute('style');
 };
 
 uploadButton.addEventListener('change', onImageUpload);
