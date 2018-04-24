@@ -298,6 +298,7 @@ var onImageFilter = function (e) {
         imagePreview.style.filter = effectFilter[i] + '(' + effectFiltersValue[i] + ')';
       } if (target.previousElementSibling.id === 'effect-none') {
         imagePreview.removeAttribute('style');
+        imagePreview.style.transform = 'scale(' + resizeValue.value.split('%')[0] / 100 + ')';
         imageUploadScale.classList.add('hidden');
       }
     }
