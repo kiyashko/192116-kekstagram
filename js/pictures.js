@@ -325,22 +325,22 @@ var resizeValue = document.querySelector('.resize__control--value');
 var resizeStep = 25;
 
 var resizeImage = function (resizeScale) {
-resizeValue.value = resizeScale + '%';
-imagePreview.style.transform = 'scale(' + resizeScale / 100 + ')';
+  resizeValue.value = resizeScale + '%';
+  imagePreview.style.transform = 'scale(' + resizeScale / 100 + ')';
 };
 
 resizePlus.addEventListener('click', function () {
   var getResizeValue = parseInt(resizeValue.value.split('%')[0], 10);
   if (getResizeValue < 100) {
-      var getResizeScale = getResizeValue + resizeStep;
-      resizeImage(getResizeScale);
-    }
+    var getResizeScale = getResizeValue + resizeStep;
+    resizeImage(getResizeScale);
+  }
 });
 
 resizeMinus.addEventListener('click', function () {
   var getResizeValue = parseInt(resizeValue.value.split('%')[0], 10);
   if (getResizeValue > 25) {
-      var getResizeScale = getResizeValue - resizeStep;
-      resizeImage(getResizeScale);
-    }
+    var getResizeScale = getResizeValue - resizeStep;
+    resizeImage(getResizeScale);
+  }
 });
