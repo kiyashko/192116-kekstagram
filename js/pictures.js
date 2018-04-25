@@ -246,6 +246,7 @@ scalePin.addEventListener('mousedown', function (evt) {
     var newCoordX = getCoord(shiftX);
     scalePin.style.left = newCoordX + '%';
     scaleLevel.style.width = newCoordX + '%';
+    onMouseUpFilter(scaleValue.value);
   };
 
   var onMouseUp = function (upEvt) {
