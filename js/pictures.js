@@ -161,19 +161,34 @@ var commentTextArea = document.querySelector('.text__description');
 
 var onImageUploadClose = function () {
   imageUploadOverlay.classList.add('hidden');
+  resetEffects();
 };
 
 var onEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE && document.activeElement !== commentHashtagArea && document.activeElement !== commentTextArea) {
     onImageUploadClose();
     imageUploadOverlay.classList.add('hidden');
-    uploadButton.value = '';
+    resetEffects();
   }
 };
 
 var onImageUpload = function () {
   imageUploadOverlay.classList.remove('hidden');
+  imageUploadScale.classList.add('hidden');
+  imagePreview.id = 'effect-none';
+  resizeValue.setAttribute('value', 50 + '%');
+  imagePreview.style.transform = 'scale(' + resizeValue.value.split('%')[0] / 100 + ')';
   document.addEventListener('keydown', onEscPress);
+  scalePin.style.left = 100 + '%';
+  scaleLevel.style.width = 100 + '%';
+};
+
+var resetEffects = function () {
+  uploadButton.value = '';
+  imagePreview.className = '';
+  imagePreview.classList.add('img-upload__preview');
+  imagePreview.removeAttribute('id');
+  imagePreview.removeAttribute('style');
 };
 
 uploadButton.addEventListener('change', onImageUpload);
@@ -231,10 +246,12 @@ scalePin.addEventListener('mousedown', function (evt) {
     var newCoordX = getCoord(shiftX);
     scalePin.style.left = newCoordX + '%';
     scaleLevel.style.width = newCoordX + '%';
+    onMouseUpFilter(scaleValue.value);
   };
 
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
+    onMouseUpFilter(scaleValue.value);
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
   };
@@ -246,6 +263,11 @@ scalePin.addEventListener('mousedown', function (evt) {
 var imagePreview = document.querySelector('.img-upload__preview');
 var uploadEffectControls = document.querySelector('.img-upload__effects');
 var scaleValue = document.querySelector('.scale__value');
+var imageUploadScale = document.querySelector('.img-upload__scale');
+
+var effectClass = ['effects__preview--none', 'effects__preview--chrome', 'effects__preview-sepia', 'effects__preview-marvin', 'effects__preview-phobos', 'effects__preview-heat'];
+var effectId = ['effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat'];
+var effectFilter = ['none', 'grayscale', 'sepia', 'invert', 'blur', 'brightness'];
 
 var createEffectFiltersValue = function (filterValue) {
   var grayscaleValue = 1 / 100 * filterValue;
@@ -257,12 +279,10 @@ var createEffectFiltersValue = function (filterValue) {
   return effectFiltersValue;
 };
 
-var effectClass = ['effects__preview--none', 'effects__preview--chrome', 'effects__preview-sepia', 'effects__preview-marvin', 'effects__preview-phobos', 'effects__preview-heat'];
-var effectId = ['effect-none', 'effect-chrome', 'effect-sepia', 'effect-marvin', 'effect-phobos', 'effect-heat'];
-var effectFilter = ['none', 'grayscale', 'sepia', 'invert', 'blur', 'brightness'];
-
 var onImageFilter = function (e) {
-  imagePreview.classList.add('img-upload__preview');
+  scaleValue.setAttribute('value', 100);
+  scalePin.style.left = 100 + '%';
+  scaleLevel.style.width = 100 + '%';
   var effectFiltersValue = createEffectFiltersValue(scaleValue.value);
   var target = e.target.parentNode;
   for (var i = 0; i < effectId.length; i++) {
@@ -271,15 +291,58 @@ var onImageFilter = function (e) {
     }
     if (target.previousElementSibling) {
       if (target.previousElementSibling.id === effectId[i]) {
-        if (target.previousElementSibling.id === 'effect-none') {
-          imagePreview.removeAttribute('style');
-        }
+        imageUploadScale.classList.remove('hidden');
         imagePreview.className = '';
+        imagePreview.classList.add('img-upload__preview');
         imagePreview.classList.add(effectClass[i]);
-        imagePreview.id = effectClass[i];
+        imagePreview.id = effectId[i];
         imagePreview.style.filter = effectFilter[i] + '(' + effectFiltersValue[i] + ')';
+      } if (target.previousElementSibling.id === 'effect-none') {
+        imagePreview.removeAttribute('style');
+        imagePreview.style.transform = 'scale(' + resizeValue.value.split('%')[0] / 100 + ')';
+        imageUploadScale.classList.add('hidden');
       }
     }
   }
 };
+
+var onMouseUpFilter = function (filterScaleValue) {
+  var effectFiltersValue = createEffectFiltersValue(filterScaleValue);
+  for (var i = 0; i < effectId.length; i++) {
+    if (imagePreview.id === effectId[i]) {
+      imagePreview.className = '';
+      imagePreview.classList.add('img-upload__preview');
+      imagePreview.classList.add(effectClass[i]);
+      imagePreview.style.filter = effectFilter[i] + '(' + effectFiltersValue[i] + ')';
+    }
+  }
+};
+
 uploadEffectControls.addEventListener('click', onImageFilter);
+
+// масштаб
+var resizePlus = document.querySelector('.resize__control--plus');
+var resizeMinus = document.querySelector('.resize__control--minus');
+var resizeValue = document.querySelector('.resize__control--value');
+var resizeStep = 25;
+
+var resizeImage = function (resizeScale) {
+  resizeValue.value = resizeScale + '%';
+  imagePreview.style.transform = 'scale(' + resizeScale / 100 + ')';
+};
+
+resizePlus.addEventListener('click', function () {
+  var getResizeValue = parseInt(resizeValue.value.split('%')[0], 10);
+  if (getResizeValue < 100) {
+    var getResizeScale = getResizeValue + resizeStep;
+    resizeImage(getResizeScale);
+  }
+});
+
+resizeMinus.addEventListener('click', function () {
+  var getResizeValue = parseInt(resizeValue.value.split('%')[0], 10);
+  if (getResizeValue > 25) {
+    var getResizeScale = getResizeValue - resizeStep;
+    resizeImage(getResizeScale);
+  }
+});
