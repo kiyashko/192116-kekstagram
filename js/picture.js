@@ -1,6 +1,6 @@
 'use strict';
 
-(function () { // генерируем массив
+(function () { // генерируем массив и картинки
   window.images = [];
   var getInfo = function (picturesCount) {
     for (var i = 0; i < picturesCount; i++) {
@@ -16,10 +16,7 @@
       window.images[i] = imageInfo;
     }
   };
-  getInfo(window.TOTAL_IMAGES);
-})();
 
-(function () { // рендер картинок
   var renderImages = function (picturesCount) {
     var pictures = document.querySelector('.pictures');
     var template = document.querySelector('template').content.querySelector('.picture__link');
@@ -38,5 +35,6 @@
       pictures.appendChild(fragment);
     }
   };
+  getInfo(window.TOTAL_IMAGES);
   renderImages(window.TOTAL_IMAGES);
 })();

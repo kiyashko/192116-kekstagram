@@ -1,6 +1,6 @@
 'use strict';
 
-(function () { // показываем форму после загрузки картинки
+(function () { // показываем форму после загрузки картинки и проверяем ее на правильность заполнения
   window.uploadButton = document.getElementById('upload-file');
   window.imageUploadOverlay = document.querySelector('.img-upload__overlay');
   window.imageUploadOverlayClose = document.getElementById('upload-cancel');
@@ -41,9 +41,7 @@
 
   window.uploadButton.addEventListener('change', onImageUpload);
   window.imageUploadOverlayClose.addEventListener('click', onImageUploadClose);
-})();
 
-(function () { // ошибки хештегов
   var hashtagErrors = function (evt) {
     var target = evt.target;
     var hashtag = target.value.toString().replace(/\s{2,}/g, ' ').toLowerCase().split(' ');
