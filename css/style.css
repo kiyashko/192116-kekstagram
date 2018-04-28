@@ -519,6 +519,7 @@ main {
 /* Кадрирование */
 
 .img-upload__resize {
+  z-index: 3;
   position: absolute;
   top: 0;
   left: 50%;

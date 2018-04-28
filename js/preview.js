@@ -4,21 +4,24 @@
   window.bigPicture = document.querySelector('.big-picture');
   window.bigPictureImg = document.querySelector('.big-picture__img img');
   window.bigPictureLikesCount = document.querySelector('.likes-count');
+  window.bigPictureDescription = document.querySelector('.social__caption');
   window.bigPictureComments = document.querySelector('.social__comments');
   window.pictureLinkClose = document.querySelector('.big-picture__cancel');
   document.querySelector('.social__comment-count').classList.add('visually-hidden');
   document.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
 
   var showBigPicture = function (pictureIndex) {
+
     window.bigPictureImg.setAttribute('src', window.images[pictureIndex].url);
-    window.bigPictureLikesCount.innerHTML = window.images[pictureIndex].like;
+    window.bigPictureLikesCount.innerHTML = window.images[pictureIndex].likes;
     window.util.firstChildRemove(window.bigPictureComments);
-    for (var j = 0; j < window.images[pictureIndex].comment.length; j++) {
+    for (var j = 0; j < window.images[pictureIndex].comments.length; j++) {
+      window.bigPictureDescription.textContent = window.images[pictureIndex].comments[0];
       var fragment = document.createDocumentFragment();
       var newCommentElement = document.createElement('li');
       var getAvatar = '<img class="social__picture" src="img/avatar-' + window.util.getRandomValue(1, 6) + '.svg" alt="Аватар комментатора фотографии" width="35" height="35">';
       newCommentElement.className = 'social__comment social__comment--text';
-      newCommentElement.innerHTML = getAvatar + window.images[pictureIndex].comment[j];
+      newCommentElement.innerHTML = getAvatar + window.images[pictureIndex].comments[j];
       fragment.appendChild(newCommentElement);
       window.bigPictureComments.appendChild(fragment);
     }
