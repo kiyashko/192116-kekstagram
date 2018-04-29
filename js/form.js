@@ -65,20 +65,9 @@
     });
   };
 
-  window.onErrorMessage = function (errorMessage) {
-    var node = document.createElement('div');
-    node.style = 'z-index: 100; margin: 10px auto; text-align: center; background-color: red;';
-    node.style.position = 'fixed';
-    node.style.left = 0;
-    node.style.right = 0;
-    node.style.fontSize = '40px';
-    node.textContent = errorMessage;
-    document.body.insertAdjacentElement('afterbegin', node);
-  };
-
   window.commentHashtagArea.addEventListener('input', hashtagErrors);
   window.imageUploadForm.addEventListener('submit', function (evt) {
-    window.upload(new FormData(imageUploadForm), function (response) {
+    window.upload(new FormData(window.imageUploadForm), function () {
       window.imageUploadOverlay.classList.add('hidden');
       resetEffects();
     }, window.onError);

@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  window.POST_URL = 'https://js.dump.academy/kekstagram111';
+  window.POST_URL = 'https://js.dump.academy/kekstagram';
   window.SERVER_URL = 'https://js.dump.academy/kekstagram/data';
   window.TOTAL_IMAGES = 25; // количество картинок
   window.MIN_LIKE = 15; // минимальное количество лайков

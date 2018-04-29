@@ -2,31 +2,48 @@
 
 (function () {
 
-  window.load = function (url, onLoad, onError) {
+  window.setup = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
-
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
-        onLoad(xhr.response);
-      } else {
-        onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
-      }
+      return (xhr.status === 200) ? onLoad(xhr.response) : onError(xhr.response);
     });
-
+    xhr.addEventListener('timeout', function () {
+      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+    });
     xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения');
     });
 
-    xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
-    });
-
     xhr.timeout = 10000;
+    return xhr;
+  };
 
-    xhr.open('GET', url);
+  window.load = function (onLoad, onError) {
+    var xhr = window.setup(onLoad, onError);
+    xhr.open('GET', window.SERVER_URL);
     xhr.send();
   };
 
+  window.upload = function (data, onLoad, onError) {
+    var xhr = window.setup(onLoad, onError);
+    xhr.open('POST', window.POST_URL);
+    xhr.send(data);
+  };
+
+  window.onErrorMessage = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 5; margin: 10px auto; text-align: center; background-color: red;';
+    node.style.position = 'fixed';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '50px';
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
+  window.onError = function (message) {
+    window.onErrorMessage(message);
+  };
 })();
