@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var POST_URL = 'https://js.dump.academy/kekstagram';
+  var SERVER_URL = 'https://js.dump.academy/kekstagram/data';
 
   window.setup = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
@@ -22,13 +24,13 @@
 
   window.load = function (onLoad, onError) {
     var xhr = window.setup(onLoad, onError);
-    xhr.open('GET', window.SERVER_URL);
+    xhr.open('GET', SERVER_URL);
     xhr.send();
   };
 
   window.upload = function (data, onLoad, onError) {
     var xhr = window.setup(onLoad, onError);
-    xhr.open('POST', window.POST_URL);
+    xhr.open('POST', POST_URL);
     xhr.send(data);
   };
 
