@@ -4,8 +4,9 @@
   window.TOTAL_IMAGES = 25; // количество картинок
   window.MIN_LIKE = 15; // минимальное количество лайков
   window.MAX_LIKE = 200; // максимальное количество лайков
-  window.ESC_KEYCODE = 27; // клавиша ESC
   window.RESIZE_STEP = 25; // значение шага для увеличения фотографии
+  window.ESC_KEYCODE = 27; // клавиша ESC
+  window.ENTER_KEYCODE = 13; // клавиша ENTER
 
   window.COMMENTS = [
     'Всё отлично!',

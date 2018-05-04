@@ -11,11 +11,11 @@
     xhr.addEventListener('load', function () {
       return (xhr.status === 200) ? onLoad(xhr.response) : onError(xhr.response);
     });
-    xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
-    });
     xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения');
+    });
+    xhr.addEventListener('timeout', function () {
+      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
     xhr.timeout = 10000;

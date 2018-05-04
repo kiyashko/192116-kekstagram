@@ -14,10 +14,14 @@
   };
 
   var onEscPress = function (evt) {
-    if (evt.keyCode === window.ESC_KEYCODE && document.activeElement !== window.commentHashtagArea && document.activeElement !== window.commentTextArea) {
-      onImageUploadClose();
-      window.imageUploadOverlay.classList.add('hidden');
-      resetEffects();
+    if (evt.keyCode === window.ESC_KEYCODE) {
+      if (document.activeElement !== window.commentHashtagArea) {
+        if (document.activeElement !== window.commentTextArea) {
+          onImageUploadClose();
+          window.imageUploadOverlay.classList.add('hidden');
+          resetEffects();
+        }
+      }
     }
   };
 

@@ -2,7 +2,7 @@
 
 (function () { // генерируем картинки
 
-  var pictures = document.querySelector('.pictures');
+  window.pictures = document.querySelector('.pictures');
   var template = document.querySelector('template').content.querySelector('.picture__link');
   var templateImgUrl = document.querySelector('template').content.querySelector('.picture__img');
   var templateComment = document.querySelector('template').content.querySelector('.picture__stat--comments');
@@ -16,7 +16,7 @@
   var imgFilterFormEllements = document.querySelectorAll('.img-filters__button');
 
   var removeOldPictures = function () {
-    window.allPictureEllements = pictures.querySelectorAll('.picture__link');
+    window.allPictureEllements = window.pictures.querySelectorAll('.picture__link');
     for (var i = 0; i < window.allPictureEllements.length; i++) {
       window.allPictureEllements[i].remove();
     }
@@ -50,9 +50,10 @@
       templateComment.innerHTML = images[i].comments.length;
       templateLike.innerHTML = images[i].likes;
       templateImgUrl.setAttribute('name', i);
+      template.setAttribute('name', i);
       var element = template.cloneNode(true);
       fragment.appendChild(element);
-      pictures.appendChild(fragment);
+      window.pictures.appendChild(fragment);
     }
   };
 
@@ -79,6 +80,5 @@
       window.debounce(sortDiscussed);
     }
   });
-
   window.load(window.onLoad, window.onError);
 })();
