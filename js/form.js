@@ -1,10 +1,15 @@
 'use strict';
 
 (function () { // показываем форму после загрузки картинки и проверяем ее на правильность заполнения
+  var imagePreview = document.querySelector('.img-upload__preview');
   var imageUploadForm = document.querySelector('.img-upload__form');
   var uploadButton = document.getElementById('upload-file');
   var imageUploadOverlay = document.querySelector('.img-upload__overlay');
   var imageUploadOverlayClose = document.getElementById('upload-cancel');
+  var imageUploadScale = document.querySelector('.img-upload__scale');
+  var resizeValue = document.querySelector('.resize__control--value');
+  var scaleLevel = document.querySelector('.scale__level');
+  var scalePin = document.querySelector('.scale__pin');
   var commentHashtagArea = document.querySelector('.text__hashtags');
   var commentTextArea = document.querySelector('.text__description');
 
@@ -27,21 +32,21 @@
 
   var onImageUpload = function () {
     imageUploadOverlay.classList.remove('hidden');
-    window.imageUploadScale.classList.add('hidden');
-    window.imagePreview.id = 'effect-none';
-    window.resizeValue.setAttribute('value', 50 + '%');
-    window.imagePreview.style.transform = 'scale(' + window.resizeValue.value.split('%')[0] / 100 + ')';
+    imageUploadScale.classList.add('hidden');
+    imagePreview.id = 'effect-none';
+    resizeValue.setAttribute('value', 50 + '%');
+    imagePreview.style.transform = 'scale(' + resizeValue.value.split('%')[0] / 100 + ')';
     document.addEventListener('keydown', onEscPress);
-    window.scalePin.style.left = 100 + '%';
-    window.scaleLevel.style.width = 100 + '%';
+    scalePin.style.left = 100 + '%';
+    scaleLevel.style.width = 100 + '%';
   };
 
   var resetEffects = function () {
     uploadButton.value = '';
-    window.imagePreview.className = '';
-    window.imagePreview.classList.add('img-upload__preview');
-    window.imagePreview.removeAttribute('id');
-    window.imagePreview.removeAttribute('style');
+    imagePreview.className = '';
+    imagePreview.classList.add('img-upload__preview');
+    imagePreview.removeAttribute('id');
+    imagePreview.removeAttribute('style');
   };
 
   uploadButton.addEventListener('change', onImageUpload);

@@ -4,7 +4,7 @@
   var POST_URL = 'https://js.dump.academy/kekstagram';
   var SERVER_URL = 'https://js.dump.academy/kekstagram/data';
 
-  window.setup = function (onLoad, onError) {
+  var setup = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
@@ -23,18 +23,18 @@
   };
 
   window.load = function (onLoad, onError) {
-    var xhr = window.setup(onLoad, onError);
+    var xhr = setup(onLoad, onError);
     xhr.open('GET', SERVER_URL);
     xhr.send();
   };
 
   window.upload = function (data, onLoad, onError) {
-    var xhr = window.setup(onLoad, onError);
+    var xhr = setup(onLoad, onError);
     xhr.open('POST', POST_URL);
     xhr.send(data);
   };
 
-  window.onErrorMessage = function (errorMessage) {
+  var onErrorMessage = function (errorMessage) {
     var node = document.createElement('div');
     node.style = 'z-index: 5; margin: 10px auto; text-align: center; background-color: red;';
     node.style.position = 'fixed';
@@ -46,6 +46,6 @@
   };
 
   window.onError = function (message) {
-    window.onErrorMessage(message);
+    onErrorMessage(message);
   };
 })();
