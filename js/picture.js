@@ -27,7 +27,7 @@
       return second.likes - first.likes;
     });
     removeOldPictures();
-    window.renderPictures(window.images);
+    renderPictures(window.images);
   };
 
   var sortDiscussed = function () {
@@ -35,7 +35,7 @@
       return second.comments.length - first.comments.length;
     });
     removeOldPictures();
-    window.renderPictures(window.images);
+    renderPictures(window.images);
   };
 
   var sortNew = function () {
@@ -43,7 +43,7 @@
     window.load(window.onLoad, window.onError);
   };
 
-  window.renderPictures = function (images) {
+  var renderPictures = function (images) {
     window.picturesCount = images.length;
     for (var i = 0; i < window.picturesCount; i++) {
       templateImgUrl.setAttribute('src', images[i].url);
@@ -61,7 +61,7 @@
     imgFilter.classList.remove('img-filters--inactive');
     window.images = data;
     window.imagesCopy = window.images.slice();
-    window.renderPictures(window.images);
+    renderPictures(window.images);
   };
 
   imgFilterForm.addEventListener('click', function (evt) {

@@ -16,7 +16,7 @@
       }
       return randomArray;
     },
-    checkDup: function (s) { // функция проверки на повтор в массиве
+    checkDuplicate: function (s) { // функция проверки на повтор в массиве
       var map = {};
       for (var i = 0; i < s.length; i++) {
         if (map[s[i]]) {
@@ -26,7 +26,7 @@
       }
       return false;
     },
-    hashtagCheck: function (arr) { // функция проверки налачия хештега
+    checkHashtag: function (arr) { // функция проверки налачия хештега
       var toSplit = arr.split('');
       if (toSplit[0] === '#') {
         return true;
@@ -34,7 +34,7 @@
         return false;
       }
     },
-    firstChildRemove: function (toFirstChildRemove) { // функция удаления элемента
+    removeFirstChild: function (toFirstChildRemove) { // функция удаления элемента
       while (toFirstChildRemove.firstChild) {
         toFirstChildRemove.removeChild(toFirstChildRemove.firstChild);
       }

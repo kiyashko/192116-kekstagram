@@ -1,9 +1,9 @@
 'use strict';
 
 (function () { // меняем размер картинки, шаг указываем в data.js
-  window.resizePlus = document.querySelector('.resize__control--plus');
-  window.resizeMinus = document.querySelector('.resize__control--minus');
   window.resizeValue = document.querySelector('.resize__control--value');
+  var resizePlus = document.querySelector('.resize__control--plus');
+  var resizeMinus = document.querySelector('.resize__control--minus');
 
   var resizeImage = function (resizeScale) {
     window.resizeValue.value = resizeScale + '%';
@@ -26,6 +26,6 @@
     }
   };
 
-  window.resizePlus.addEventListener('click', resizeImagePlus);
-  window.resizeMinus.addEventListener('click', resizeImageMinus);
+  resizePlus.addEventListener('click', resizeImagePlus);
+  resizeMinus.addEventListener('click', resizeImageMinus);
 })();

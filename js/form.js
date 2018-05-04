@@ -1,24 +1,24 @@
 'use strict';
 
 (function () { // показываем форму после загрузки картинки и проверяем ее на правильность заполнения
-  window.imageUploadForm = document.querySelector('.img-upload__form');
-  window.uploadButton = document.getElementById('upload-file');
-  window.imageUploadOverlay = document.querySelector('.img-upload__overlay');
-  window.imageUploadOverlayClose = document.getElementById('upload-cancel');
-  window.commentHashtagArea = document.querySelector('.text__hashtags');
-  window.commentTextArea = document.querySelector('.text__description');
+  var imageUploadForm = document.querySelector('.img-upload__form');
+  var uploadButton = document.getElementById('upload-file');
+  var imageUploadOverlay = document.querySelector('.img-upload__overlay');
+  var imageUploadOverlayClose = document.getElementById('upload-cancel');
+  var commentHashtagArea = document.querySelector('.text__hashtags');
+  var commentTextArea = document.querySelector('.text__description');
 
   var onImageUploadClose = function () {
-    window.imageUploadOverlay.classList.add('hidden');
+    imageUploadOverlay.classList.add('hidden');
     resetEffects();
   };
 
   var onEscPress = function (evt) {
     if (evt.keyCode === window.ESC_KEYCODE) {
-      if (document.activeElement !== window.commentHashtagArea) {
-        if (document.activeElement !== window.commentTextArea) {
+      if (document.activeElement !== commentHashtagArea) {
+        if (document.activeElement !== commentTextArea) {
           onImageUploadClose();
-          window.imageUploadOverlay.classList.add('hidden');
+          imageUploadOverlay.classList.add('hidden');
           resetEffects();
         }
       }
@@ -26,7 +26,7 @@
   };
 
   var onImageUpload = function () {
-    window.imageUploadOverlay.classList.remove('hidden');
+    imageUploadOverlay.classList.remove('hidden');
     window.imageUploadScale.classList.add('hidden');
     window.imagePreview.id = 'effect-none';
     window.resizeValue.setAttribute('value', 50 + '%');
@@ -37,20 +37,20 @@
   };
 
   var resetEffects = function () {
-    window.uploadButton.value = '';
+    uploadButton.value = '';
     window.imagePreview.className = '';
     window.imagePreview.classList.add('img-upload__preview');
     window.imagePreview.removeAttribute('id');
     window.imagePreview.removeAttribute('style');
   };
 
-  window.uploadButton.addEventListener('change', onImageUpload);
-  window.imageUploadOverlayClose.addEventListener('click', onImageUploadClose);
+  uploadButton.addEventListener('change', onImageUpload);
+  imageUploadOverlayClose.addEventListener('click', onImageUploadClose);
 
   var hashtagErrors = function (evt) {
     var target = evt.target;
     var hashtag = target.value.toString().replace(/\s{2,}/g, ' ').toLowerCase().split(' ');
-    if (window.util.checkDup(hashtag) === true) {
+    if (window.util.checkDuplicate(hashtag) === true) {
       target.setCustomValidity('Не повторяйте хештеги!');
     } else {
       target.setCustomValidity('');
@@ -63,16 +63,16 @@
         target.setCustomValidity('Максимальная длина хештега 20 символов!');
       } else if (hashtag[i] === '#') {
         target.setCustomValidity('Вы забыли добавить символы к хештегу!');
-      } else if (window.util.hashtagCheck(hashtag[i]) === !true) {
+      } else if (window.util.checkHashtag(hashtag[i]) === !true) {
         target.setCustomValidity('Вы забыли добавить решетку к хештегу!');
       }
     });
   };
 
-  window.commentHashtagArea.addEventListener('input', hashtagErrors);
-  window.imageUploadForm.addEventListener('submit', function (evt) {
-    window.upload(new FormData(window.imageUploadForm), function () {
-      window.imageUploadOverlay.classList.add('hidden');
+  commentHashtagArea.addEventListener('input', hashtagErrors);
+  imageUploadForm.addEventListener('submit', function (evt) {
+    window.upload(new FormData(imageUploadForm), function () {
+      imageUploadOverlay.classList.add('hidden');
       resetEffects();
     }, window.onError);
     evt.preventDefault();
