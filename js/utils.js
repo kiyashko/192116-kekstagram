@@ -28,11 +28,7 @@
     },
     checkHashtag: function (arr) { // функция проверки налачия хештега
       var toSplit = arr.split('');
-      if (toSplit[0] === '#') {
-        return true;
-      } else {
-        return false;
-      }
+      return (toSplit[0] === '#') ? true : false;
     },
     removeFirstChild: function (toFirstChildRemove) { // функция удаления элемента
       while (toFirstChildRemove.firstChild) {
