@@ -7,11 +7,7 @@
   var templateImgUrl = document.querySelector('template').content.querySelector('.picture__img');
   var templateComment = document.querySelector('template').content.querySelector('.picture__stat--comments');
   var templateLike = document.querySelector('template').content.querySelector('.picture__stat--likes');
-  var imgFilterNew = document.getElementById('filter-new');
-  var imgFilterPopular = document.getElementById('filter-popular');
-  var imgFilterDiscussed = document.getElementById('filter-discussed');
   var imgFilter = document.querySelector('.img-filters');
-  var fragment = document.createDocumentFragment();
   var imgFilterForm = document.querySelector('.img-filters__form');
   var imgFilterFormEllements = document.querySelectorAll('.img-filters__button');
 
@@ -43,24 +39,23 @@
     window.load(window.onLoad, window.onError);
   };
 
-  var renderPictures = function (images) {
-    var picturesCount = images.length;
+  var renderPictures = function () {
+    var picturesCount = window.images.length;
     for (var i = 0; i < picturesCount; i++) {
-      templateImgUrl.setAttribute('src', images[i].url);
-      templateComment.innerHTML = images[i].comments.length;
-      templateLike.innerHTML = images[i].likes;
+      templateImgUrl.setAttribute('src', window.images[i].url);
+      templateComment.textContent = window.images[i].comments.length;
+      templateLike.textContent = window.images[i].likes;
       templateImgUrl.setAttribute('name', i);
       template.setAttribute('name', i);
       var element = template.cloneNode(true);
-      fragment.appendChild(element);
-      pictures.appendChild(fragment);
+      pictures.appendChild(element);
     }
   };
 
   window.onLoad = function (data) {
     imgFilter.classList.remove('img-filters--inactive');
     window.images = data;
-    renderPictures(window.images);
+    renderPictures();
   };
 
   imgFilterForm.addEventListener('click', function (evt) {
@@ -68,16 +63,20 @@
       item.classList.remove('img-filters__button--active');
     });
     var target = evt.target;
-    if (target.id === 'filter-new') {
-      imgFilterNew.classList.add('img-filters__button--active');
-      window.debounce(sortNew);
-    } if (target.id === 'filter-popular') {
-      imgFilterPopular.classList.add('img-filters__button--active');
-      window.debounce(sortLikes);
-    } if (target.id === 'filter-discussed') {
-      imgFilterDiscussed.classList.add('img-filters__button--active');
-      window.debounce(sortDiscussed);
+    var sortType = '';
+    var targetId = target.id;
+    switch (targetId) {
+      case 'filter-discussed':
+        sortType = sortDiscussed;
+        break;
+      case 'filter-popular':
+        sortType = sortLikes;
+        break;
+      default:
+        sortType = sortNew;
     }
+    target.classList.add('img-filters__button--active');
+    window.debounce(sortType);
   });
   window.load(window.onLoad, window.onError);
 })();

@@ -1,7 +1,7 @@
 'use strict';
 
 (function () { // показываем форму после загрузки картинки
-  var body = document.getElementsByTagName('body');
+  var body = document.querySelector('body');
   var bigPicture = document.querySelector('.big-picture');
   var bigPictureImg = document.querySelector('.big-picture__img img');
   var bigPictureLikesCount = document.querySelector('.likes-count');
@@ -12,31 +12,35 @@
   document.querySelector('.social__comment-loadmore').classList.add('visually-hidden');
 
   var showBigPicture = function (pictureIndex) {
-
     bigPictureImg.setAttribute('src', window.images[pictureIndex].url);
-    bigPictureLikesCount.innerHTML = window.images[pictureIndex].likes;
+    bigPictureLikesCount.textContent = window.images[pictureIndex].likes;
     window.util.removeFirstChild(bigPictureComments);
     for (var j = 0; j < window.images[pictureIndex].comments.length; j++) {
-      bigPictureDescription.textContent = window.images[pictureIndex].comments[0];
-      var fragment = document.createDocumentFragment();
       var newCommentElement = document.createElement('li');
-      var getAvatar = '<img class="social__picture" src="img/avatar-' + window.util.getRandomValue(1, 6) + '.svg" alt="Аватар комментатора фотографии" width="35" height="35">';
+      var newCommentAvatar = document.createElement('img');
+      var newCommentText = document.createTextNode(window.images[pictureIndex].comments[j]);
+      bigPictureDescription.textContent = window.images[pictureIndex].comments[0];
+      newCommentAvatar.className = 'social__picture';
+      newCommentAvatar.src = 'img/avatar-' + window.util.getRandomValue(1, 6) + '.svg';
+      newCommentAvatar.alt = 'Аватар комментатора фотографии';
+      newCommentAvatar.width = '35';
+      newCommentAvatar.height = '35';
       newCommentElement.className = 'social__comment social__comment--text';
-      newCommentElement.innerHTML = getAvatar + window.images[pictureIndex].comments[j];
-      fragment.appendChild(newCommentElement);
-      bigPictureComments.appendChild(fragment);
+      bigPictureComments.appendChild(newCommentElement);
+      newCommentElement.appendChild(newCommentAvatar);
+      newCommentElement.appendChild(newCommentText);
     }
     bigPicture.classList.remove('hidden');
-    body[0].classList.add('modal-open');
+    body.classList.add('modal-open');
   };
 
   var onBigPictureClose = function () {
     bigPicture.classList.add('hidden');
-    body[0].removeAttribute('class');
+    body.removeAttribute('class');
   };
 
-  document.addEventListener('keydown', function (keyEvt) {
-    if (keyEvt.keyCode === 27) {
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 27) {
       onBigPictureClose();
     }
   });

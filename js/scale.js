@@ -1,10 +1,11 @@
 'use strict';
 
 (function () { // перемещение ползунка
-  var scaleValue = document.querySelector('.scale__value');
-  var scaleLine = document.querySelector('.scale__line');
-  var scalePin = document.querySelector('.scale__pin');
-  var scaleLevel = document.querySelector('.scale__level');
+  var imageUploadOverlay = document.querySelector('.img-upload__overlay');
+  var scaleValue = imageUploadOverlay.querySelector('.scale__value');
+  var scaleLine = imageUploadOverlay.querySelector('.scale__line');
+  var scalePin = imageUploadOverlay.querySelector('.scale__pin');
+  var scaleLevel = imageUploadOverlay.querySelector('.scale__level');
 
   scalePin.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
