@@ -24,7 +24,7 @@
   };
 
   var onImageFilter = function (evt) {
-    scaleValue.setAttribute('value', 100);
+    scaleValue.value = 100;
     scalePin.style.left = 100 + '%';
     scaleLevel.style.width = 100 + '%';
     var effectFiltersValue = createEffectFiltersValue(scaleValue.value);

@@ -1,8 +1,8 @@
 'use strict';
 
 (function () { // меняем размер картинки, шаг указываем в data.js
-  var resizeValue = document.querySelector('.resize__control--value');
   var imagePreview = document.querySelector('.img-upload__preview');
+  var resizeValue = document.querySelector('.resize__control--value');
   var resizePlus = document.querySelector('.resize__control--plus');
   var resizeMinus = document.querySelector('.resize__control--minus');
 

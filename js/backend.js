@@ -22,16 +22,17 @@
     return xhr;
   };
 
-  window.load = function (onLoad, onError) {
-    var xhr = setup(onLoad, onError);
-    xhr.open('GET', SERVER_URL);
-    xhr.send();
-  };
-
-  window.upload = function (data, onLoad, onError) {
-    var xhr = setup(onLoad, onError);
-    xhr.open('POST', POST_URL);
-    xhr.send(data);
+  window.backend = {
+    load: function (onLoad, onError) {
+      var xhr = setup(onLoad, onError);
+      xhr.open('GET', SERVER_URL);
+      xhr.send();
+    },
+    upload: function (data, onLoad, onError) {
+      var xhr = setup(onLoad, onError);
+      xhr.open('POST', POST_URL);
+      xhr.send(data);
+    }
   };
 
   var onErrorMessage = function (errorMessage) {

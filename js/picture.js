@@ -36,13 +36,13 @@
 
   var sortNew = function () {
     removeOldPictures();
-    window.load(window.onLoad, window.onError);
+    window.backend.load(window.onLoad, window.onError);
   };
 
   var renderPictures = function () {
     var picturesCount = window.images.length;
     for (var i = 0; i < picturesCount; i++) {
-      templateImgUrl.setAttribute('src', window.images[i].url);
+      templateImgUrl.src = window.images[i].url;
       templateComment.textContent = window.images[i].comments.length;
       templateLike.textContent = window.images[i].likes;
       templateImgUrl.setAttribute('name', i);
@@ -78,5 +78,5 @@
     target.classList.add('img-filters__button--active');
     window.debounce(sortType);
   });
-  window.load(window.onLoad, window.onError);
+  window.backend.load(window.onLoad, window.onError);
 })();

@@ -20,7 +20,7 @@
         newCoord = 100;
       }
       var newScaleValue = Math.round(newCoord);
-      scaleValue.setAttribute('value', newScaleValue);
+      scaleValue.value = newScaleValue;
       return newCoord;
     };
 

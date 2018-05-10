@@ -10,8 +10,8 @@
   var imageUploadOverlayClose = document.querySelector('.img-upload__cancel');
   var imageUploadScale = document.querySelector('.img-upload__scale');
   var resizeValue = document.querySelector('.resize__control--value');
-  var scaleLevel = document.querySelector('.scale__level');
-  var scalePin = document.querySelector('.scale__pin');
+  var scaleLevel = imageUploadOverlay.querySelector('.scale__level');
+  var scalePin = imageUploadOverlay.querySelector('.scale__pin');
   var commentHashtagArea = document.querySelector('.text__hashtags');
   var commentTextArea = document.querySelector('.text__description');
 
@@ -49,7 +49,7 @@
     imageUploadOverlay.classList.remove('hidden');
     imageUploadScale.classList.add('hidden');
     imagePreview.id = 'effect-none';
-    resizeValue.setAttribute('value', 50 + '%');
+    resizeValue.value = 50 + '%';
     imagePreview.style.transform = 'scale(' + resizeValue.value.split('%')[0] / 100 + ')';
     document.addEventListener('keydown', onEscPress);
     scalePin.style.left = 100 + '%';
@@ -95,7 +95,7 @@
 
   commentHashtagArea.addEventListener('input', hashtagErrors);
   imageUploadForm.addEventListener('submit', function (evt) {
-    window.upload(new FormData(imageUploadForm), function () {
+    window.backend.upload(new FormData(imageUploadForm), function () {
       onImageUploadClose();
     }, window.onError);
     evt.preventDefault();
